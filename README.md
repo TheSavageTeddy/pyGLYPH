@@ -39,7 +39,9 @@ fuzzing tests - random msgs: 100%|███████████████�
 
 ## Function info
 
-`RLWE` is the class for the signature scheme. Its methods will be detailed below.
+### GLYPH
+
+`GLYPH` is the class for the signature scheme. Its methods will be detailed below.
 
 `_keygen`
 - Generates private and public key for signing and verification.
