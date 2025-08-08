@@ -1,6 +1,11 @@
-# eth-pq-multi-sig
+# pyGLYPH
 
-Ethereum post quantum multi signatures
+Post quantum signature scheme GLYPH, implemented in Python.
+
+Includes AGLYPH, a multi-signature version of GLYPH.
+
+Original paper: [GLYPH: A New Instantiation of the GLP Digital Signature
+Scheme](https://eprint.iacr.org/2017/766.pdf)
 
 ## Requirements
 
