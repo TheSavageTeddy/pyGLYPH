@@ -31,11 +31,82 @@ Example:
 unit tests - constant msg: 100%|███████████████████████████| 1000/1000 [01:59<00:00,  8.39it/s]
 fuzzing tests - random msgs: 100%|█████████████████████████| 1000/1000 [02:02<00:00,  8.13it/s]
 
+➜ sage AGLYPH/aglyph.sage 
+same message: 100%|██████████████████████████████████████████| 100/100 [18:20<00:00, 11.01s/it]
+fuzzed message: 100%|████████████████████████████████████████| 100/100 [18:26<00:00, 11.06s/it]
+
 ```
 
 
 
 ## Benchmarking
+
+Benchmarking can be run with the `bench.sage` files in both `GLYPH` and `AGLYPH`.
+```
+sage AGLYPH/bench.sage
+sage GLYPH/bench.sage
+```
+
+Example:
+```
+➜ sage GLYPH/bench.sage 
+
+--- GLYPH Benchmarks (running 100 iterations) ---
+
+--- Key Generation ---
+Key Generation: 100%|████████████████████████████████████████| 100/100 [00:01<00:00, 98.83it/s]
+Removed 12 outliers.
+Mean:       7.442314 ms
+Median:     7.436021 ms
+Std Dev:    0.233748 ms
+
+--- Signing ---
+Signing: 100%|███████████████████████████████████████████████| 100/100 [00:06<00:00, 14.76it/s]
+Removed 5 outliers.
+Mean:       50.393637 ms
+Median:     40.514500 ms
+Std Dev:    30.494781 ms
+
+--- Verification ---
+Verification: 100%|██████████████████████████████████████████| 100/100 [00:07<00:00, 13.23it/s]
+Removed 13 outliers.
+Mean:       6.946790 ms
+Median:     6.929292 ms
+Std Dev:    0.094228 ms
+
+Results saved to bench_results_glyph.json
+
+```
+
+```
+➜ sage AGLYPH/bench.sage
+
+--- AGLYPH Benchmarks (running 100 iterations) ---
+
+--- Key Generation ---
+Key Generation: 100%|███████████████████████████████████████| 100/100 [00:00<00:00, 260.66it/s]
+Removed 12 outliers.
+Mean:       2.613677 ms
+Median:     2.608250 ms
+Std Dev:    0.040964 ms
+
+--- Signing ---
+Signing: 100%|███████████████████████████████████████████████| 100/100 [00:01<00:00, 70.79it/s]
+Removed 8 outliers.
+Mean:       9.552615 ms
+Median:     9.561625 ms
+Std Dev:    0.106122 ms
+
+--- Verification ---
+Verification: 100%|██████████████████████████████████████████| 100/100 [00:01<00:00, 59.30it/s]
+Removed 2 outliers.
+Mean:       3.712636 ms
+Median:     3.762728 ms
+Std Dev:    0.163909 ms
+
+Results saved to bench_results_aglyph.json
+
+```
 
 ## Function info
 
