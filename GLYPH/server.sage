@@ -1,5 +1,11 @@
 import socket
-from rlwe import RLWE
+from sage.repl.load import load
+
+# import GLYPH
+prev_name = __name__
+__name__ = None
+load("GLYPH/glyph.sage", globals())
+__name__ = prev_name
 
 import time
 
@@ -9,7 +15,7 @@ PORT = 1337
 class DemoServer:
     def __init__(self, conn):
         self.conn = conn
-        self.pubkey, self.privkey = rlwe.keygen()
+        self.pubkey, self.privkey = glyph.keygen()
 
     def keygen(self):
         self.conn.sendall(self.pubkey)
@@ -22,7 +28,7 @@ class DemoServer:
     
     def sendResource(self, m):
         print(f"SYSTEM: Sending resource: {m.decode()}")
-        sign = rlwe.sign(m, self.privkey)
+        sign = glyph.sign(m, self.privkey)
 
         self.conn.sendall(m)
         print("SYSTEM:\tMessage sent")
@@ -41,8 +47,8 @@ if __name__ == "__main__":
             with conn:
                 print('SYSTEM: Connected by', addr)
 
-                rlwe = RLWE()
-                pubkey, privkey = rlwe._keygen()
+                glyph = GLYPH()
+                pubkey, privkey = glyph._keygen()
                 client = DemoServer(conn)
 
                 ## Send public key

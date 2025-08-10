@@ -1,5 +1,11 @@
 import socket
-from rlwe import RLWE
+from sage.repl.load import load
+
+# import GLYPH
+prev_name = __name__
+__name__ = None
+load("GLYPH/glyph.sage", globals())
+__name__ = prev_name
 
 HOST = '127.0.0.1'
 PORT = 1337
@@ -21,7 +27,7 @@ if __name__ == "__main__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
 
-        rlwe = RLWE()
+        glyph = GLYPH()
         server = DemoClient(s)
         
         ## Receive pk
@@ -35,7 +41,7 @@ if __name__ == "__main__":
         signature = s.recv(9000)
 
         ## Verify signature
-        if rlwe.verify(resource, signature, server.pubkey):
+        if glyph.verify(resource, signature, server.pubkey):
             print("SYSTEM: resource received")
         else:
             print("SYSTEM: signature verification failed")
