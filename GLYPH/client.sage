@@ -42,10 +42,10 @@ if __name__ == "__main__":
         server.sendResource(b"Hello, World!")
 
         ## Receive resource and signature
-        resource = s.recv(1024)
-        signature = s.recv(9000)
+        resource, signature = [bytes.fromhex(x.decode()) for x in s.recv(9000).split(b'\x00')]
 
         ## Verify signature
+        print(f"{resource = }\n")
         if glyph.verify(resource, signature, server.pubkey):
             print("SYSTEM: resource received and verified\n")
         else:
@@ -70,8 +70,7 @@ if __name__ == "__main__":
         server.sendResource(b"Hello, World!")
 
         ## Receive resource and signature
-        resource = s.recv(1024)
-        signature = s.recv(9000)
+        resource, signature = [bytes.fromhex(x.decode()) for x in s.recv(9000).split(b'\x00')]
 
         resource = b"MALICIOUS WORLD"
 

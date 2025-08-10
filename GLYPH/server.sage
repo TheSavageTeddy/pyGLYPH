@@ -28,11 +28,10 @@ class DemoServer:
         print(f"SYSTEM: Sending resource: {m.decode()}\n")
         sign = glyph.sign(m, self.privkey)
 
-        self.conn.sendall(m)
-        print("SYSTEM:\tMessage sent")
+        msg = m.hex().encode() + b'\x00' + sign.hex().encode()
 
-        self.conn.sendall(sign)
-        print("SYSTEM:\tSignature sent")
+        self.conn.sendall(msg)
+        print("SYSTEM:\tMessage and signature sent\n")
 
 if __name__ == "__main__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
