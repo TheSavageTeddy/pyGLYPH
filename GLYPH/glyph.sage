@@ -190,7 +190,7 @@ class GLYPH:
         z1_bytes_len = ceil(self.n * log2(2*self.b + 1) / 8)
         z2_bytes_len = ceil(self.n * log2(2*1 + 1) / 8)
 
-        assert len(sig_bytes) == c_bytes_len + z1_bytes_len + z2_bytes_len
+        assert len(sig_bytes) == c_bytes_len + z1_bytes_len + z2_bytes_len, f"expected equal: {len(sig_bytes) = } {c_bytes_len + z1_bytes_len + z2_bytes_len = }"
 
         c_bytes = sig_bytes[:c_bytes_len]
         z1_bytes = sig_bytes[c_bytes_len:c_bytes_len + z1_bytes_len]
