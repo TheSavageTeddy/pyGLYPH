@@ -16,6 +16,25 @@ We also require `pycryptodome`, and optionally `tqdm` for tests. You can install
 
 ## Usage
 
+To use GLYPH, create a `.sage` file and import the GLYPH class in this way:
+
+```py
+from sage.repl.load import load
+
+# avoid running tests
+prev_name = __name__
+__name__ = None
+load("GLYPH/glyph.sage", globals())
+__name__ = prev_name
+
+glyph = GLYPH()
+
+pubkey, privkey = glyph.keygen()
+msg = b"teddy"
+signature = glyph.sign(msg, privkey)
+assert glyph.verify(msg, signature, pubkey)
+```
+
 ## Tests
 
 Unit and fuzzing tests for sage are directly in the `glyph.sage` and `aglyph.sage` files.
