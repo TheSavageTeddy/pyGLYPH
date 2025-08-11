@@ -152,5 +152,51 @@ Results saved to bench_results_aglyph.json
 - Given polynomial `poly` and message in bytes `m`,
         deterministically hashes both the `poly` and `m`,
         and returns the hash digest in bytes.
+`compress`
+- Given polynomials `y` and `z`,
+        compresses `z` to `z'` such that kfloor(`y`+`z`) = kfloor(`y`+`z'`),
+        and returns the compressed polynomial `z'`.
 
+`polyKfloor`
+- Given a polynomial `x`,
+        computes the kfloor of each coefficient of `x`,
+        and returns a polynomial with those coefficients.
 
+`encode_sparse`
+- Given a hash output in bytes,
+        deterministically generates a k-sparse polynomial in Rq,
+        and returns that polynomial.
+
+        Will return `None` if the hash output is not of valid length.
+
+### AGLYPH
+
+`AGLYPH` is the class for the multi-signature scheme. Most of its methods are
+common to the implementation of `GLYPH`. Its unique methods will be detailed below.
+
+`keygen`
+- Generates private and public key for each user for signing and verification.
+        The format of these keys are polynomials under the quotient ring R, where\
+            public_key = t = a*s + e\
+            private_key = (s, e)\
+        Returns tuple `(public_key, private_key)`.
+
+`commit`
+- Generates nonces `y1` and `y2`, and creates a commitment to this choice.
+        The commitment is computed as `a * y1 + y2`.\
+        Returns tuple `(y1, y2), commitment`
+
+`sign`
+- Given a message `m` in bytes, private key tuple `(s, e)`, and challenge `H`,
+        signs message `m` and returns signature tuple
+        `(c, z1, z2)`.
+
+`aggregate`
+- Given signatures `(C, z1, z2)` of each signer, and their public keys,
+returns the aggregated signature `(C, Z1, Z2)`, with `Z2` compressed as in `GLYPH`.
+
+`verify`
+- Given a message `msg`, signature,
+        and public keys of several validators, verifies if the signature for the message is valid.
+        That is, returns `True` given `sig` if `msg` was signed by `sum(public_key)`,
+        otherwise returns `False`.

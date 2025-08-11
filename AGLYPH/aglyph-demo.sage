@@ -5,7 +5,6 @@ from helpers import *
 from hashlib import sha256
 
 from tqdm import *
-import os
 
 class AGLPHY:
     def __init__(self):
@@ -285,93 +284,60 @@ class Validator:
 
 if __name__ == "__main__":
     aglyph = AGLPHY()
+
+    msg = b'Will'
+    wrong_msg = b'teddy'
+
+    print("creating validators")
+    validators = []
+
+    for _ in range(1024):
+        validators.append(Validator())
+    pubkeys = [v.pubkey for v in validators]
+    wrong_pubkey = aglyph.keygen()[0]
+    print("validators created\n")
+
+    while True: 
+        print("creating challenges")
+        challs = []
+        for v in validators:
+            challs.append(v.submitNonceCommit(msg))
+        print("challenges created\n")
+
+        print("creating individual signatures")
+        signatures = []
+        for v in validators:
+            signatures.append(v.sign(challs))
+        print("individual signatures created\n")
+
+        print("aggregating signatures")
+        aggregate = aglyph.aggregate(signatures, pubkeys)
+        if aggregate:
+            break
     
-    '''
-    same message testing
-    '''
-    for i in tqdm(range(100), desc = "same message"):
-        msg = b'Will'
-        wrong_msg = b'teddy'
+    print("produced valid signature\n")
 
-        validators = []
+    print("""
+        ===========================================
+        ================ Testing ==================
+        ===========================================
+    """)
+    verified = aglyph.verify(msg, aggregate, pubkeys)
+    print(f"correct inputs - {verified}")
 
-        for _ in range(1024):
-            validators.append(Validator())
-        pubkeys = [v.pubkey for v in validators]
-        wrong_pubkey = aglyph.keygen()[0]
+    verified = aglyph.verify(wrong_msg, aggregate, pubkeys)
+    print(f"invalid message - {verified}")
 
-        while True: 
-            challs = []
-            for v in validators:
-                challs.append(v.submitNonceCommit(msg))
+    verified = aglyph.verify(msg, aggregate, [wrong_pubkey])
+    print(f"incorrect public keys - {verified}\n")
 
-            signatures = []
-            for v in validators:
-                signatures.append(v.sign(challs))
-            
-            aggregate = aglyph.aggregate(signatures, pubkeys)
-            if aggregate:
-                break
+    print("""
+        ===========================================
+        ================== Keys ===================
+        ===========================================
+    """)
 
-        verified = aglyph.verify(msg, aggregate, pubkeys)
-        assert verified == True
-
-        verified = aglyph.verify(wrong_msg, aggregate, pubkeys)
-        assert verified == False
-
-        verified = aglyph.verify(msg, aggregate, [wrong_pubkey])
-        assert verified == False
-
-        verified = aglyph.verify(os.urandom(1) + msg, aggregate, pubkeys)
-        assert verified == False
-        
-        verified = aglyph.verify(msg + os.urandom(1), aggregate, pubkeys)
-        assert verified == False
-        
-        verified = aglyph.verify(wrong_msg, aggregate, wrong_pubkey)
-        assert verified == False
-    
-    '''
-    fuzzed message testing
-    '''
-    for i in tqdm(range(100), desc = "fuzzed message"):
-        msg = os.urandom(32)
-        wrong_msg = os.urandom(32)
-
-        validators = []
-
-        for _ in range(1024):
-            validators.append(Validator())
-        pubkeys = [v.pubkey for v in validators]
-        wrong_pubkey = aglyph.keygen()[0]
-
-        while True: 
-            challs = []
-            for v in validators:
-                challs.append(v.submitNonceCommit(msg))
-
-            signatures = []
-            for v in validators:
-                signatures.append(v.sign(challs))
-            
-            aggregate = aglyph.aggregate(signatures, pubkeys)
-            if aggregate:
-                break
-
-        verified = aglyph.verify(msg, aggregate, pubkeys)
-        assert verified == True
-
-        verified = aglyph.verify(wrong_msg, aggregate, pubkeys)
-        assert verified == False
-
-        verified = aglyph.verify(msg, aggregate, [wrong_pubkey])
-        assert verified == False
-
-        verified = aglyph.verify(os.urandom(1) + msg, aggregate, pubkeys)
-        assert verified == False
-        
-        verified = aglyph.verify(msg + os.urandom(1), aggregate, pubkeys)
-        assert verified == False
-        
-        verified = aglyph.verify(wrong_msg, aggregate, wrong_pubkey)
-        assert verified == False
+    C, Z1, Z2 = aggregate
+    print(f"{C=}\n")
+    print(f"{Z1=}\n")
+    print(f"{Z2=}\n")
